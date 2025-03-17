@@ -61,7 +61,7 @@ public class EnemyAI : MonoBehaviour
         // Si el jugador es detectado y la salud es baja, el enemigo huye
         if (PlayerDetected())
         {
-            if (health < 50)
+            if (health <= 50)
             {
                 currentState = EnemyState.Fleeing;
             }
