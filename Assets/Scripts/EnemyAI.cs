@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -32,11 +33,11 @@ public class EnemyAI : MonoBehaviour
     private Vector3 lastSeenPosition;
     private Vector3 originalPosition;
 
+
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
 
-        // Verifica si hay un Renderer para evitar errores
         enemyRenderer = GetComponent<Renderer>();
         if (enemyRenderer != null)
         {
@@ -58,7 +59,6 @@ public class EnemyAI : MonoBehaviour
     {
         CheckHealth();
 
-        // Si el jugador es detectado y la salud es baja, el enemigo huye
         if (PlayerDetected())
         {
             if (health <= 50)
@@ -125,14 +125,11 @@ public class EnemyAI : MonoBehaviour
     {
         if (!agent.isActiveAndEnabled || !agent.isOnNavMesh) return;
 
-        // Huye del jugador si la salud es baja
-        Vector3 fleeDirection = (transform.position - player.position).normalized; // Dirección opuesta al jugador
-        Vector3 fleePosition = transform.position + fleeDirection * 10; // Se aleja 10 unidades del jugador
+        Vector3 fleeDirection = (transform.position - player.position).normalized; 
+        Vector3 fleePosition = transform.position + fleeDirection * 2; 
 
-        agent.SetDestination(fleePosition); // Establece la posición de huida
-
-        // Si el enemigo se aleja lo suficiente del jugador, vuelve a patrullar
-        if (Vector3.Distance(transform.position, player.position) > 2)
+        agent.SetDestination(fleePosition); 
+        if (Vector3.Distance(transform.position, player.position) > 1)
         {
             currentState = EnemyState.Patrolling;
             Patrol();
@@ -179,8 +176,10 @@ public class EnemyAI : MonoBehaviour
 
     void Die()
     {
-        Destroy(gameObject);
+        gameObject.SetActive(false);
         Time.timeScale = 0;
+        UIController.instance.PlayerWin();
+
     }
 
     bool PlayerDetected()
@@ -204,9 +203,7 @@ public class EnemyAI : MonoBehaviour
 
     void EndGame()
     {
-        // Aquí puedes hacer que el juego termine o se reinicie
-        Debug.Log("¡El enemigo ha tocado al jugador! Fin del juego.");
-        // Agregar lógica para terminar el juego o reiniciarlo
-        Time.timeScale = 0; // Detiene el tiempo (fin del juego)
+        UIController.instance.AIWin();
+        Time.timeScale = 0; 
     }
 }

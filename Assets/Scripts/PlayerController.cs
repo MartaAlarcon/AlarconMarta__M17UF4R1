@@ -34,8 +34,6 @@ public class PlayerController : MonoBehaviour
         foreach (Collider enemy in hitEnemies)
         {
             enemy.GetComponent<EnemyAI>().health -= damage;
-            Debug.Log(enemy.GetComponent<EnemyAI>().health);
-            Debug.Log("Enemy hit!");
         }
     }
 }
